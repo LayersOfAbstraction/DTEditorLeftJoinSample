@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Data.SqlClient;
+using System.Data.Common;
 
 namespace DTEditorLeftJoinSample
 {
@@ -16,6 +18,7 @@ namespace DTEditorLeftJoinSample
     {
         public static void Main(string[] args)
         {
+            DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
             var host = CreateWebHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())
             {
