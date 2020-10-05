@@ -19,9 +19,10 @@ namespace DTEditorLeftJoinSample.Controllers
 
         private readonly IConfiguration _config;
 
-        public RecipeIngredientsController(CookingContext context)
+        public RecipeIngredientsController(CookingContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
         // GET: RecipeIngredients
