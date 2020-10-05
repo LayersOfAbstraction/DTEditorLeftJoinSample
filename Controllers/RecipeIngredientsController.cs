@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTEditorLeftJoinSample.Data;
 using DTEditorLeftJoinSample.Models;
+using DataTables;
+using Microsoft.Extensions.Configuration;
 
 namespace DTEditorLeftJoinSample.Controllers
 {
     public class RecipeIngredientsController : Controller
     {
         private readonly CookingContext _context;
+
+
+        private readonly IConfiguration _config;
 
         public RecipeIngredientsController(CookingContext context)
         {
@@ -25,6 +30,32 @@ namespace DTEditorLeftJoinSample.Controllers
             var cookingContext = _context.RecipeIngredient.Include(r => r.Ingredient).Include(r => r.Recipe);
             return View(await cookingContext.ToListAsync());
         }
+
+        public ActionResult LeftJoinRecipesAndIngredientsOntoRecipeIngredient()
+        {
+            //DECLARE database connection.
+            string connectionString = _config.GetConnectionString("DefaultConnection");
+
+            //CREATE debatable instance.
+            using (var db = new Database("sqlserver", connectionString))
+            {
+                //CREATE Editor instance with starting table.
+                var response = new Editor(db, "tblRecipeIngredient")
+                    .Field(new Field("tblRecipeIngredient.Quantity"))
+                    .Field(new Field("tblRecipe.Description"))
+                    .Field(new Field("tblIngredient.IngredientName"))
+
+
+                    //JOIN from tblIngredient column RecipeID linked from tblRecipe column ID
+                    //and IngredientID linked from tblUser column ID.  
+                    .LeftJoin("tblRecipe ", " tblRecipe.ID ", "=", " tblRecipeIngredient.RecipeIngredientID")
+                    .LeftJoin("tblIngredient ", " tblIngredient.ID ", "=", " tblRecipeIngredient.RecipeIngredientID")
+                    .Process(HttpContext.Request)
+                    .Data();
+                return Json(response);
+            }
+        }
+
 
         // GET: RecipeIngredients/Details/5
         public async Task<IActionResult> Details(int? id)
