@@ -26,10 +26,9 @@ namespace DTEditorLeftJoinSample.Controllers
         }
 
         // GET: RecipeIngredients
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var cookingContext = _context.RecipeIngredient.Include(r => r.Ingredient).Include(r => r.Recipe);
-            return View(await cookingContext.ToListAsync());
+            return View();
         }
 
         public ActionResult LeftJoinRecipesAndIngredientsOntoRecipeIngredient()
@@ -46,11 +45,10 @@ namespace DTEditorLeftJoinSample.Controllers
                     .Field(new Field("tblRecipe.Description"))
                     .Field(new Field("tblIngredient.IngredientName"))
 
-
                     //JOIN from tblIngredient column RecipeID linked from tblRecipe column ID
                     //and IngredientID linked from tblUser column ID.  
-                    .LeftJoin("tblRecipe ", " tblRecipe.ID ", "=", " tblRecipeIngredient.RecipeIngredientID")
-                    .LeftJoin("tblIngredient ", " tblIngredient.ID ", "=", " tblRecipeIngredient.RecipeIngredientID")
+                    .LeftJoin("tblRecipe ", " tblRecipe.ID ", "=", " tblRecipeIngredient.RecipeID")
+                    .LeftJoin("tblIngredient ", " tblIngredient.ID ", "=", " tblRecipeIngredient.IngredientID")
                     .Process(HttpContext.Request)
                     .Data();
                 return Json(response);

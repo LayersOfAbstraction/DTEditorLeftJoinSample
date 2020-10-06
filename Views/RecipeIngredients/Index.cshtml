@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DTEditorLeftJoinSample.Models.RecipeIngredient>
+﻿@model DTEditorLeftJoinSample.Models.RecipeIngredient
 
 @{
     ViewData["Title"] = "Index";
@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table id="recipeIngredientTable">
     <thead>
         <tr>
             <th>
@@ -24,24 +24,34 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Recipe.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ingredient.ID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+    <tbody></tbody>
 </table>
+@section scripts{
+    <script>
+    function renderDT_RowId(data) {
+        return data.replace('row_', '');
+    };
+    var oTable = $('#recipeIngredientTable').DataTable({
+        "ajax": {
+            type: "POST",
+            "url": "@Url.Action("LeftJoinRecipesAndIngredientsOntoRecipeIngredient")",
+            "dataSrc": function (result) {
+                return result.data;
+                }
+        },
+        "columns": [
+            { "data": "tblIngredient.IngredientName"},
+            { "data": "tblRecipe.Description" },
+            { "data": "tblRecipeIngredient.Quantity" },
+            {
+                "data": null,
+                "render": function (value) {
+                    return '<a href="/RecipeIngredients/Details/' + renderDT_RowId(value.DT_RowId) + '"button type="button" class="btn btn-primary btn-block">Details</a> <br> '
+                        + '<a href="/RecipeIngredients/Edit/' + renderDT_RowId(value.DT_RowId) + '"button type="button" class="btn btn-info btn-block">Edit </a> <br> '
+                        + '<a href="/RecipeIngredients/Delete/' + renderDT_RowId(value.DT_RowId) + '"button type="button" class="btn btn-primary btn-block">Delete</a>';
+                }
+            }
+            ]
+    });
+    </script>
+}
