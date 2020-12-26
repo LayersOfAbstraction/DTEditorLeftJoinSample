@@ -28,6 +28,7 @@
 </table>
 @section scripts{
     <script>
+    $.fn.dataTable.ext.errMode = 'throw';
     function renderDT_RowId(data) {
         return data.replace('row_', '');
     };
