@@ -35,21 +35,18 @@
     var oTable = $('#recipeIngredientTable').DataTable({
         "ajax": {
             type: "POST",
-            "url": "@Url.Action("LeftJoinRecipesAndIngredientsOntoRecipeIngredient")",
-            "dataSrc": function (result) {
-                return result.data;
-                }
+            "url": "@Url.Action("LeftJoinRecipesAndIngredientsOntoRecipeIngredient")"
         },
         "columns": [
-            { "data": "tblIngredient.IngredientName"},
-            { "data": "tblRecipe.Description" },
-            { "data": "tblRecipeIngredient.Quantity" },
+            { "data": "tblIngredient.ingredientName"},
+            { "data": "tblRecipe.description"},
+            { "data": "tblRecipeIngredient.quantity" },
             {
                 "data": null,
                 "render": function (value) {
-                    return '<a href="/RecipeIngredients/Details/' + renderDT_RowId(value.DT_RowId) + '"button type="button" class="btn btn-primary btn-block">Details</a> <br> '
-                        + '<a href="/RecipeIngredients/Edit/' + renderDT_RowId(value.DT_RowId) + '"button type="button" class="btn btn-info btn-block">Edit </a> <br> '
-                        + '<a href="/RecipeIngredients/Delete/' + renderDT_RowId(value.DT_RowId) + '"button type="button" class="btn btn-primary btn-block">Delete</a>';
+                    return '<a href="/RecipeIngredients/Details/' + renderDT_RowId(value.dT_RowId) + '"button type="button" class="btn btn-primary btn-block">Details</a> <br> '
+                        + '<a href="/RecipeIngredients/Edit/' + renderDT_RowId(value.dT_RowId) + '"button type="button" class="btn btn-info btn-block">Edit </a> <br> '
+                        + '<a href="/RecipeIngredients/Delete/' + renderDT_RowId(value.dT_RowId) + '"button type="button" class="btn btn-primary btn-block">Delete</a>';
                 }
             }
             ]
