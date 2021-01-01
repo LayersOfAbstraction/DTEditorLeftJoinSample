@@ -31,22 +31,20 @@ namespace DTEditorLeftJoinSample.Controllers
             return View();
         }
 
-        public ActionResult LeftJoinRecipesAndIngredientsOntoRecipeIngredient()
+        public IActionResult LeftJoinRecipesAndIngredientsOntoRecipeIngredient()
         {
             //DECLARE database connection.
             string connectionString = _config.GetConnectionString("DefaultConnection");
-
             //CREATE debatable instance.
             using (var db = new Database("sqlserver", connectionString))
             {
                 //CREATE Editor instance with starting table.
                 var response = new Editor(db, "tblRecipeIngredient")
                     .Field(new Field("tblRecipeIngredient.Quantity"))
-                    .Field(new Field("tblRecipe.Description"))
+                    .Field(new Field("tblRecipe.Description"))                     
                     .Field(new Field("tblIngredient.IngredientName"))
-
-                    //JOIN from tblIngredient column RecipeID linked from tblRecipe column ID
-                    //and IngredientID linked from tblUser column ID.  
+                     //JOIN from tblIngredient column RecipeID linked from tblRecipe column ID
+                    //and IngredientID linked from tblUser column ID.                    
                     .LeftJoin("tblRecipe ", " tblRecipe.ID ", "=", " tblRecipeIngredient.RecipeID")
                     .LeftJoin("tblIngredient ", " tblIngredient.ID ", "=", " tblRecipeIngredient.IngredientID")
                     .Process(HttpContext.Request)
